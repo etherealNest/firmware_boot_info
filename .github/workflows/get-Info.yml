@@ -10,6 +10,14 @@ on:
       debug:
         description: Enable debug mode?
         type: boolean
+      link_body:
+        description: Stable or Beta Factory Image?
+        type: choice
+        options:
+          - Stable
+          - Beta
+        default: Stable
+        required: true
 env:
   GH_TOKEN: ${{ github.token }}
     
@@ -20,12 +28,18 @@ jobs:
     steps:
       - name: Download factory
         run: |
-          wget --progress=dot:mega https://dl.google.com/developers/android/cinnamonbun/images/factory/${{ inputs.link }}
+          if [ "${{ inputs.link_body }}" = "Stable" ]; then
+            LINK_BODY="https://dl.google.com/dl/android/aosp"
+          elif [ "${{ inputs.link_body }}" = "Beta" ]; then
+            LINK_BODY="https://dl.google.com/developers/android/cinnamonbun/images/factory"
+          fi
+          wget --progress=dot:mega "${LINK_BODY}/${{ inputs.link }}"
 
       - name: Unpack boot.img from downloaded file
         run: |
           unzip ${{ inputs.link }} -d temp
           unzip $(find "$PWD/temp" -type f -name '*.zip') boot.img -d .
+          
       - name: Download tools
         run: |
           gh release download --repo topjohnwu/Magisk --pattern 'Magisk*apk'
