@@ -35,7 +35,7 @@ jobs:
       - name: Get-Info from boot.img
         run: |
           mkdir log
-          ./magiskboot unpack boot.img . 2>&1 | tee log/magiskboot.log
+          ./magiskboot unpack boot.img 2>&1 | tee log/magiskboot.log
           ./avbtool.py info_image --image boot.img 2>&1 | tee log/avbtool.log
             
       - name: Upload Artifacts
