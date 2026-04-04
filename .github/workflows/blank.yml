@@ -11,13 +11,12 @@ on:
         description: Enable debug mode?
         type: boolean
 env:
-  GH_TOKEN: ''
+  GH_TOKEN: ${{ github.token }}
     
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Download factory
         run: |
@@ -29,7 +28,22 @@ jobs:
           unzip $(find "$PWD/temp" -type f -name '*.zip') boot.img -d .
       - name: Download tools
         run: |
-          gh release download https://github.com/topjohnwu/Magisk
+          gh release download --repo topjohnwu/Magisk --pattern 'Magisk*apk'
+          unzip -p $(find -name 'Magisk*.apk') lib/arm64-v8a/libmagiskboot.so > magiskboot && chmod +x magiskboot
+          wget -qO- "https://android.googlesource.com/platform/external/avb/+/refs/heads/main-kernel/avbtool.py?format=text" | base64 -d avbtool.b64 > avbtool.py && chmod +x avbtool.py
+
+      - name: Get-Info from boot.img
+        run: |
+          magiskboot unpack boot.img . 2>&1 | tee log/magiskboot.log
+          avbtool info_image --image boot.img 2>&1 | tee log/avbtool.log
+            
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v7.0.0
+        with:
+          path: |
+            boot.img
+            log/*.log
+          retention-days: 2
           
       - name: Debbug VS Code
         if: always() && inputs.debug
