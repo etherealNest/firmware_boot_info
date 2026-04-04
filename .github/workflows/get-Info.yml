@@ -14,7 +14,7 @@ env:
   GH_TOKEN: ${{ github.token }}
     
 jobs:
-  build:
+  action:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,7 +30,7 @@ jobs:
         run: |
           gh release download --repo topjohnwu/Magisk --pattern 'Magisk*apk'
           unzip -p $(find -name 'Magisk*.apk') lib/arm64-v8a/libmagiskboot.so > magiskboot && chmod +x magiskboot
-          wget -qO- "https://android.googlesource.com/platform/external/avb/+/refs/heads/main-kernel/avbtool.py?format=text" | base64 -d avbtool.b64 > avbtool.py && chmod +x avbtool.py
+          wget -qO- "https://android.googlesource.com/platform/external/avb/+/refs/heads/main-kernel/avbtool.py?format=text" | base64 -d > avbtool.py && chmod +x avbtool.py
 
       - name: Get-Info from boot.img
         run: |
