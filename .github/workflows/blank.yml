@@ -24,9 +24,9 @@ jobs:
       - name: Unpack boot.img from downloaded file
         run: |
           unzip ${{ inputs.link }} -d temp
-          unzip temp/${{ inputs.link }} boot.img -d .
+          unzip $(find "$PWD" -type f -name '*.zip') boot.img -d .
           ls -la
           
       - name: Debbug VS Code
-        if: ${{ inputs.debug }}
+        if: always() && inputs.debug
         uses: fawazahmed0/action-debug-vscode@main
