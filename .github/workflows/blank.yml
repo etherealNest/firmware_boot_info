@@ -7,6 +7,10 @@ on:
         description: archive name for download
         type: string
         required: true
+      debug:
+        description: Enable debug mode?
+        type: boolean
+    
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,5 +24,9 @@ jobs:
       - name: Unpack boot.img from downloaded file
         run: |
           unzip ${{ inputs.link }} -d temp
-          unzip temp/*.zip boot.img -d .
+          unzip temp/${{ inputs.link }} boot.img -d .
           ls -la
+          
+      - name: Debbug VS Code
+        if: ${{ inputs.debug }}
+        uses: fawazahmed0/action-debug-vscode@main
