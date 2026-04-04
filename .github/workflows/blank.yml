@@ -1,0 +1,24 @@
+name: Download and get info about boot.img
+
+on:
+  workflow_dispatch:
+    inputs:
+      link: 
+        description: archive name for download
+        type: string
+        required: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Download factory
+        run: |
+          wget --progress=dot:mega https://dl.google.com/developers/android/cinnamonbun/images/factory/${{ inputs.link }}
+
+      - name: Unpack boot.img from downloaded file
+        run: |
+          unzip ${{ inputs.link }} -d temp
+          unzip temp/*.zip boot.img -d .
+          ls -la
