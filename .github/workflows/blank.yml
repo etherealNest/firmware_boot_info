@@ -10,6 +10,8 @@ on:
       debug:
         description: Enable debug mode?
         type: boolean
+env:
+  GH_TOKEN=''
     
 jobs:
   build:
@@ -24,8 +26,10 @@ jobs:
       - name: Unpack boot.img from downloaded file
         run: |
           unzip ${{ inputs.link }} -d temp
-          unzip $(find "$PWD" -type f -name '*.zip') boot.img -d .
-          ls -la
+          unzip $(find "$PWD/temp" -type f -name '*.zip') boot.img -d .
+      - name: Download tools
+        run: |
+          gh release download https://github.com/topjohnwu/Magisk
           
       - name: Debbug VS Code
         if: always() && inputs.debug
