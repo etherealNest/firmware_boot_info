@@ -37,7 +37,10 @@ jobs:
           mkdir log
           ./magiskboot unpack boot.img 2>&1 | tee log/magiskboot.log
           ./avbtool.py info_image --image boot.img 2>&1 | tee log/avbtool.log
-            
+
+      - name: Strings Image
+        run: strings boot.img | grep 6.1
+        
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7.0.0
         with:
