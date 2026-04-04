@@ -11,7 +11,7 @@ on:
         description: Enable debug mode?
         type: boolean
 env:
-  GH_TOKEN=''
+  GH_TOKEN: ''
     
 jobs:
   build:
